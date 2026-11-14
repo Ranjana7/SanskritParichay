@@ -35,19 +35,48 @@
       <div class="hero-layout">
         <div id="mascot" class="parrot-mascot state-wave" aria-live="polite">
           <svg viewBox="0 0 240 240" class="mithu-svg" role="img" aria-label="Mithu parrot mascot">
+            <defs>
+              <linearGradient id="sanskritHomeMithuBodyOriginal" x1="74" y1="58" x2="168" y2="206" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ff2f2f"></stop>
+                <stop offset="0.16" stop-color="#ff4a4a"></stop>
+                <stop offset="0.33" stop-color="#ff6b6b"></stop>
+                <stop offset="0.5" stop-color="#2f6bff"></stop>
+                <stop offset="0.67" stop-color="#1f86ff"></stop>
+                <stop offset="0.84" stop-color="#1553d6"></stop>
+                <stop offset="1" stop-color="#5b3dff"></stop>
+              </linearGradient>
+              <linearGradient id="sanskritHomeMithuWingLeftOriginal" x1="66" y1="116" x2="130" y2="188" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ff2f55"></stop>
+                <stop offset="0.5" stop-color="#ff3a3a"></stop>
+                <stop offset="1" stop-color="#ff6a6a"></stop>
+              </linearGradient>
+              <linearGradient id="sanskritHomeMithuWingRightOriginal" x1="174" y1="118" x2="214" y2="188" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#4aa3ff"></stop>
+                <stop offset="0.5" stop-color="#2d7dff"></stop>
+                <stop offset="1" stop-color="#2f4dff"></stop>
+              </linearGradient>
+              <linearGradient id="sanskritHomeMithuTailOriginal" x1="182" y1="150" x2="223" y2="199" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#3a9dff"></stop>
+                <stop offset="1" stop-color="#2546cc"></stop>
+              </linearGradient>
+            </defs>
             <ellipse class="mithu-shadow" cx="120" cy="205" rx="54" ry="16"></ellipse>
-            <path class="mithu-tail" d="M180 150 L220 180 L180 188 Z"></path>
-            <ellipse class="mithu-body" cx="120" cy="120" rx="64" ry="78"></ellipse>
-            <ellipse class="mithu-belly" cx="120" cy="138" rx="40" ry="48"></ellipse>
-            <path class="mithu-wing-left" d="M78 112 C34 118, 28 168, 72 178 C74 152, 86 132, 98 124 Z"></path>
-            <path class="mithu-wing-right" d="M162 112 C206 118, 212 168, 168 178 C166 152, 154 132, 142 124 Z"></path>
-            <circle class="mithu-eye-left" cx="100" cy="96" r="8"></circle>
-            <circle class="mithu-eye-right" cx="140" cy="96" r="8"></circle>
-            <path class="mithu-beak-top" d="M106 109 C114 103, 126 103, 134 109 C128 118, 118 122, 106 118 Z"></path>
-            <path class="mithu-beak-bottom" d="M108 118 C116 122, 124 122, 132 118 C126 128, 116 131, 108 126 Z"></path>
-            <rect class="mithu-leg-left" x="104" y="184" width="8" height="20" rx="4"></rect>
-            <rect class="mithu-leg-right" x="128" y="184" width="8" height="20" rx="4"></rect>
-            <path class="mithu-crest" d="M104 45 L114 26 L122 44 L130 24 L140 45"></path>
+            <path class="mithu-tail" d="M180 150 L220 180 L180 188 Z" style="fill:url(#sanskritHomeMithuTailOriginal)"></path>
+            <ellipse class="mithu-body" cx="120" cy="120" rx="64" ry="78" style="fill:url(#sanskritHomeMithuBodyOriginal)"></ellipse>
+            <ellipse class="mithu-belly" cx="120" cy="138" rx="40" ry="48" style="fill:#f8fbff"></ellipse>
+            <path class="mithu-wing-left" d="M78 112 C34 118, 28 168, 72 178 C74 152, 86 132, 98 124 Z" style="fill:url(#sanskritHomeMithuWingLeftOriginal)"></path>
+            <path class="mithu-wing-right" d="M162 112 C206 118, 212 168, 168 178 C166 152, 154 132, 142 124 Z" style="fill:url(#sanskritHomeMithuWingRightOriginal)"></path>
+            <circle class="mithu-eye-left" cx="100" cy="96" r="8" style="fill:#24325c"></circle>
+            <circle class="mithu-eye-right" cx="140" cy="96" r="8" style="fill:#24325c"></circle>
+            <path class="mithu-beak-top" d="M106 109 C114 103, 126 103, 134 109 C128 118, 118 122, 106 118 Z" style="fill:#ffbd7f"></path>
+            <path class="mithu-beak-bottom" d="M108 118 C116 122, 124 122, 132 118 C126 128, 116 131, 108 126 Z" style="fill:#f79f56"></path>
+            <rect class="mithu-leg-left" x="104" y="184" width="8" height="20" rx="4" style="fill:#ffc589"></rect>
+            <rect class="mithu-leg-right" x="128" y="184" width="8" height="20" rx="4" style="fill:#ffc589"></rect>
+            <path class="mithu-crest" d="M104 45 L114 26 L122 44 L130 24 L140 45" style="stroke:#ff1f4a"></path>
+            <path d="M106 52 L112 41" style="stroke:#ff3a3a;stroke-width:6;fill:none;stroke-linecap:round"></path>
+            <path d="M118 47 L123 37" style="stroke:#ff6a6a;stroke-width:6;fill:none;stroke-linecap:round"></path>
+            <path d="M130 47 L135 37" style="stroke:#4aa3ff;stroke-width:6;fill:none;stroke-linecap:round"></path>
+            <path d="M142 53 L148 42" style="stroke:#2d7dff;stroke-width:6;fill:none;stroke-linecap:round"></path>
           </svg>
           <p id="mascotSpeech" class="mascot-speech">Hi! I'm Mithu, your learning buddy! Come explore magical forests, meet friendly animals, discover beautiful Sanskrit words and collect stars along the way! Ready? Let's play!</p>
         </div>
@@ -160,12 +189,12 @@
   <script src="../assets/shared-nav.js?v=20261113u2"></script>
   <script src="../assets/seamless-experience.js?v=20261112u1"></script>
   <script>window.SP_LANGUAGE_HOME_URL="index.html";window.SP_LANGUAGE_CHOOSER_URL="../index.html";</script>
-  <script src="../assets/site-config.js?v=20261112u3"></script>
+  <script src="../assets/site-config.js?v=20261114u1"></script>
   <script src="../assets/messages.js?v=20261111u4"></script>
-  <script src="../assets/progress-store.js?v=20261112u3"></script>
+  <script src="../assets/progress-store.js?v=20261114u1"></script>
   <script src="../assets/common.js?v=20261112u3"></script>
   <script src="../assets/vocabulary-map.js?v=20261112u2"></script>
   <script src="../assets/home.js?v=20261114u5"></script>
-  <script src="../assets/shloka-garden.js?v=20261114u1"></script>
+  <script src="../assets/shloka-garden.js?v=20261114u5"></script>
 </body>
 </html>

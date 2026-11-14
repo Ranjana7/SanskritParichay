@@ -41,6 +41,10 @@
     hunt: "hidden-letter-hunt"
   };
 
+  if (typeof globalScope.spApplyDeploymentTestReset === "function") {
+    globalScope.spApplyDeploymentTestReset();
+  }
+
   function readJson(key, fallback) {
     try {
       const raw = localStorage.getItem(key);
