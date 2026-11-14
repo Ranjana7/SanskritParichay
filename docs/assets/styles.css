@@ -2203,20 +2203,24 @@ th {
 }
 
 .mithu-body {
-  fill: #1f8fff;
+  fill: #7dcf4c;
 }
 
 .mithu-belly {
-  fill: #d8f2ff;
+  fill: #fff3ac;
 }
 
 .mithu-tail {
-  fill: #0b57c8;
+  fill: #3e9a49;
 }
 
 .mithu-wing-left,
 .mithu-wing-right {
-  fill: #1273e6;
+  fill: #9ddf58;
+}
+
+.mithu-wing-right {
+  fill: #66c44e;
 }
 
 .mithu-eye-left,
@@ -2238,11 +2242,36 @@ th {
 }
 
 .mithu-crest {
-  stroke: #ff3b5f;
+  stroke: #ff2548;
   stroke-width: 7;
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.mithu-classic .mithu-body {
+  fill: #7dcf4c;
+}
+
+.mithu-classic .mithu-belly {
+  fill: #fff3ac;
+}
+
+.mithu-classic .mithu-tail {
+  fill: #3e9a49;
+}
+
+.mithu-classic .mithu-wing-left,
+.mithu-classic .mithu-wing-right {
+  fill: #9ddf58;
+}
+
+.mithu-classic .mithu-wing-right {
+  fill: #66c44e;
+}
+
+.mithu-classic .mithu-crest {
+  stroke: #ff2548;
 }
 
 /* Bhasha home: pink-purple Mithu with pastel rainbow accents and red crest. */
@@ -2343,7 +2372,11 @@ body.page-sanskrit-world .mithu-crest {
 
 .mini-cursor-mithu .mithu-wing-left,
 .mini-cursor-mithu .mithu-wing-right {
-  fill: #71c84d;
+  fill: #9ddf58;
+}
+
+.mini-cursor-mithu .mithu-wing-right {
+  fill: #66c44e;
 }
 
 .mini-cursor-mithu .mithu-crest {
@@ -2923,8 +2956,111 @@ body.page-sanskrit-world .mithu-crest {
   gap: 14px;
 }
 
+.shloka-catalogue {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.shloka-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
+  align-items: stretch;
+  border: 2px solid #d9e6ff;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #fffdf6, #f3f8ff);
+  padding: 9px;
+  box-shadow: 0 8px 18px rgba(37, 62, 122, 0.09);
+}
+
+.shloka-card.is-active {
+  border-color: #8dcf62;
+  box-shadow: 0 12px 24px rgba(58, 106, 58, 0.15);
+}
+
+.shloka-card-thumb {
+  width: 100%;
+  height: 100%;
+  min-height: 88px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #d2e0ff;
+}
+
+.shloka-card-content {
+  display: grid;
+  gap: 6px;
+}
+
+.shloka-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.shloka-card-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #263f71;
+}
+
+.shloka-card-head p {
+  margin: 0;
+}
+
+.shloka-card-progress {
+  border-radius: 999px;
+  background: #e9f7e8;
+  color: #2f6f38;
+  border: 1px solid #b6e2bc;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.shloka-card-content > p {
+  margin: 0;
+  color: #425683;
+  font-size: 0.91rem;
+  line-height: 1.35;
+}
+
+.shloka-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shloka-card-actions .button {
+  margin: 0;
+  font-size: 0.84rem;
+  padding: 8px 10px;
+}
+
+.shloka-player-shell {
+  border: 2px solid #d8e7ff;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f5f9ff, #fff7e8 70%);
+  padding: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.shloka-player-head h3 {
+  margin: 0;
+  color: #254174;
+}
+
+.shloka-player-head p {
+  margin: 6px 0 0;
+  color: #465c8a;
+}
+
 .shloka-video-wrap {
-  background: linear-gradient(160deg, #f5f9ff, #fff8e8);
+  margin-top: 10px;
+  background: linear-gradient(150deg, #f7fbff, #fff8ec);
   border: 1px solid #d7e6ff;
   border-radius: 16px;
   padding: 10px;
@@ -2933,8 +3069,9 @@ body.page-sanskrit-world .mithu-crest {
 .shloka-video {
   width: 100%;
   border-radius: 12px;
-  background: #0f1327;
-  max-height: 340px;
+  background: radial-gradient(circle at 20% 18%, #fff9de, #f5f8ff 58%, #e8f0ff);
+  border: 1px solid #dce8ff;
+  max-height: 360px;
 }
 
 .shloka-subtitle {
@@ -2963,6 +3100,7 @@ body.page-sanskrit-world .mithu-crest {
 }
 
 .shloka-scenes {
+  margin-top: 10px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
@@ -2972,8 +3110,8 @@ body.page-sanskrit-world .mithu-crest {
   width: 100%;
   border-radius: 10px;
   border: 2px solid #d4e3ff;
-  opacity: 0.8;
-  transform: scale(0.98);
+  opacity: 0.84;
+  transform: scale(0.985);
   transition: transform 0.25s ease, opacity 0.25s ease, border-color 0.25s ease;
 }
 
@@ -2984,6 +3122,7 @@ body.page-sanskrit-world .mithu-crest {
 }
 
 .shloka-actions {
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -2994,10 +3133,11 @@ body.page-sanskrit-world .mithu-crest {
 }
 
 .recite-privacy-note {
-  margin-top: 0;
+  margin-top: 8px;
 }
 
 .shloka-lines {
+  margin-top: 8px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 10px;
@@ -3011,6 +3151,11 @@ body.page-sanskrit-world .mithu-crest {
   text-align: left;
   display: grid;
   gap: 4px;
+}
+
+.shloka-line-card.active {
+  border-color: #88c95d;
+  box-shadow: 0 0 0 2px rgba(136, 201, 93, 0.2);
 }
 
 .shloka-line-card .sa {
@@ -3029,6 +3174,14 @@ body.page-sanskrit-world .mithu-crest {
 }
 
 @media (max-width: 860px) {
+  .shloka-card {
+    grid-template-columns: 1fr;
+  }
+
+  .shloka-card-thumb {
+    min-height: 120px;
+  }
+
   .shloka-scenes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
