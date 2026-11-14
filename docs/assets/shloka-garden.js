@@ -57,7 +57,7 @@
       id: "sahana-vavatu",
       title: "Sah Nāvavatu",
       description: "A calm study prayer to chant together.",
-      learningVideo: "../assets/media/shlokas/sah_navavatu_web.mp4?v=20261114u11",
+      learningVideo: "../assets/media/shlokas/sah_navavatu_web.mp4?v=20261114u12",
       thumbnail: "../assets/illustrations/shloka/sahana-scene-1.png",
       sceneImages: [
         "../assets/illustrations/shloka/sahana-scene-1.png",
@@ -85,7 +85,7 @@
       id: "namo-devyai-mahadevyai",
       title: "Namo Devyai Mahādevyai",
       description: "A gentle Devi chant with devotion.",
-      learningVideo: "../assets/media/shlokas/namo_devyai_web.mp4?v=20261114u11",
+      learningVideo: "../assets/media/shlokas/namo_devyai_web.mp4?v=20261114u12",
       thumbnail: "../assets/illustrations/shloka/namo-scene-1.png",
       sceneImages: [
         "../assets/illustrations/shloka/namo-scene-1.png",
