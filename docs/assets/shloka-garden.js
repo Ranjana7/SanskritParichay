@@ -8,7 +8,6 @@
   const SHLOKA_REWARD_KEY = STORAGE_PREFIX + ".shlokaGarden.dailyReward";
   const motion = window.Motion || {};
   const animate = motion.animate || function () {};
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   const ui = {
     title: document.getElementById("previewTitle"),
@@ -25,31 +24,44 @@
     gems: document.getElementById("homeGems")
   };
 
+  const lineTemplate = [
+    { sanskrit: "ॐ सह नाववतु ।", transliteration: "Om saha navavatu", meaning: "May we be protected together." },
+    { sanskrit: "सह नौ भुनक्तु ।", transliteration: "Saha nau bhunaktu", meaning: "May we be nourished together." },
+    { sanskrit: "सह वीर्यं करवावहै ।", transliteration: "Saha viryam karavavahai", meaning: "May we work together with great energy." },
+    { sanskrit: "तेजस्वि नावधीतमस्तु मा विद्विषावहै ।", transliteration: "Tejasvi navadhitamastu ma vidvishavahai", meaning: "May our learning shine. May we never dislike one another." },
+    { sanskrit: "ॐ शान्तिः शान्तिः शान्तिः ॥", transliteration: "Om shantih shantih shantih", meaning: "Om, peace, peace, peace." }
+  ];
+
+  const cueOffsets = [
+    { start: 0.0, end: 6.5, lineIndex: 0 },
+    { start: 6.5, end: 12.5, lineIndex: 1 },
+    { start: 12.5, end: 18.5, lineIndex: 2 },
+    { start: 18.5, end: 25.5, lineIndex: 3 },
+    { start: 25.5, end: 28.2, lineIndex: 4 }
+  ];
+
+  function buildCues(startOffset) {
+    return cueOffsets.map(function (cue) {
+      return {
+        start: startOffset + cue.start,
+        end: startOffset + cue.end,
+        lineIndex: cue.lineIndex
+      };
+    });
+  }
+
   const shloka = {
     id: "sahana-vavatu",
     title: "Sahana Vavatu",
-    pronunciationVideo: "../assets/media/shlokas/sahana-vavatu-pronunciation.mp4",
-    meaningVideo: "../assets/media/shlokas/sahana-vavatu-meaning.mp4",
+    learningVideo: "../assets/media/shlokas/sahana-vavatu-learning-v1.mp4",
     sceneImages: [
       "../assets/illustrations/shloka/sahana-scene-1.png",
       "../assets/illustrations/shloka/sahana-scene-2.png",
       "../assets/illustrations/shloka/sahana-scene-3.png",
       "../assets/illustrations/shloka/sahana-scene-4.png"
     ],
-    lines: [
-      { sanskrit: "सह नाववतु ।", transliteration: "Saha navavatu", meaning: "May we be protected together." },
-      { sanskrit: "सह नौ भुनक्तु ।", transliteration: "Saha nau bhunaktu", meaning: "May we be nourished together." },
-      { sanskrit: "सह वीर्यं करवावहै ।", transliteration: "Saha viryam karavavahai", meaning: "May we work with great energy together." },
-      { sanskrit: "तेजस्विनावधीतमस्तु मा विद्विषावहै ।", transliteration: "Tejasvinavadhitamastu ma vidvishavahai", meaning: "May our learning shine; may we never dislike one another." },
-      { sanskrit: "ॐ शान्तिः शान्तिः शान्तिः ॥", transliteration: "Om shantih shantih shantih", meaning: "Om, peace, peace, peace." }
-    ],
-    cues: [
-      { start: 0, end: 6.5, lineIndex: 0 },
-      { start: 6.5, end: 12.5, lineIndex: 1 },
-      { start: 12.5, end: 18.5, lineIndex: 2 },
-      { start: 18.5, end: 25.5, lineIndex: 3 },
-      { start: 25.5, end: 28.2, lineIndex: 4 }
-    ]
+    lines: lineTemplate,
+    cues: buildCues(2).concat(buildCues(32))
   };
 
   const state = loadState();
@@ -60,15 +72,8 @@
     subtitleMeaning: null,
     sceneNodes: [],
     currentCueIndex: -1,
-    guidedMode: false,
-    guidedPauseUntil: 0,
-    repeatTarget: 5,
-    repeatCount: 0,
-    recognition: null,
-    recitationText: "",
-    reciteStatus: null,
-    reciteStartBtn: null,
-    reciteStopBtn: null
+    lineCards: [],
+    reciteBtn: null
   };
 
   function londonDateKey() {
@@ -188,34 +193,27 @@
     renderProgress();
   }
 
-  function setSubtitleFromCue(timeSec) {
+  function highlightLine(lineIndex) {
+    runtime.lineCards.forEach(function (card, idx) {
+      card.classList.toggle("active", idx === lineIndex);
+    });
+  }
+
+  function setSubtitle(timeSec) {
     const cueIndex = shloka.cues.findIndex(function (cue) {
       return timeSec >= cue.start && timeSec < cue.end;
     });
     if (cueIndex === -1) return;
-    if (runtime.currentCueIndex !== cueIndex) {
-      runtime.currentCueIndex = cueIndex;
-      const cue = shloka.cues[cueIndex];
-      const line = shloka.lines[cue.lineIndex];
-      if (runtime.subtitleLine) runtime.subtitleLine.textContent = line.sanskrit;
-      if (runtime.subtitleTranslit) runtime.subtitleTranslit.textContent = line.transliteration;
-      if (runtime.subtitleMeaning) runtime.subtitleMeaning.textContent = line.meaning;
-      highlightScene(cue.lineIndex);
-      markLinePracticed(cue.lineIndex);
-      if (runtime.guidedMode) {
-        const remaining = cue.end - timeSec;
-        if (remaining < 0.18) {
-          runtime.video.pause();
-          runtime.guidedPauseUntil = Date.now() + 1600;
-          if (ui.status) ui.status.textContent = "Now repeat this line aloud with Mithu.";
-          window.setTimeout(function () {
-            if (runtime.video && runtime.guidedMode && Date.now() >= runtime.guidedPauseUntil) {
-              runtime.video.play().catch(function () {});
-            }
-          }, 1650);
-        }
-      }
-    }
+    if (runtime.currentCueIndex === cueIndex) return;
+    runtime.currentCueIndex = cueIndex;
+    const cue = shloka.cues[cueIndex];
+    const line = shloka.lines[cue.lineIndex];
+    runtime.subtitleLine.textContent = line.sanskrit;
+    runtime.subtitleTranslit.textContent = line.transliteration;
+    runtime.subtitleMeaning.textContent = line.meaning;
+    highlightLine(cue.lineIndex);
+    highlightScene(cue.lineIndex);
+    markLinePracticed(cue.lineIndex);
   }
 
   function highlightScene(lineIndex) {
@@ -258,156 +256,9 @@
     panel.classList.remove("wrong");
     panel.classList.add("correct");
     const rewardText = rewarded ? " You also earned 2 Gems for today." : "";
-    if (ui.status) ui.status.textContent = "🌸 Shloka complete! Replay anytime and keep shining." + rewardText;
-    setMascotSpeech("Wonderful! You completed Sahana Vavatu. I am so proud of you!");
+    ui.status.textContent = "🌸 Shloka complete! Replay anytime and keep chanting." + rewardText;
+    setMascotSpeech("Wonderful chanting! Mithu is so proud of you.");
     launchCelebration();
-  }
-
-  function stopRecitation() {
-    if (runtime.recognition) {
-      runtime.recognition.onresult = null;
-      runtime.recognition.onend = null;
-      runtime.recognition.onerror = null;
-      runtime.recognition.stop();
-      runtime.recognition = null;
-    }
-    if (runtime.reciteStartBtn) runtime.reciteStartBtn.disabled = false;
-    if (runtime.reciteStopBtn) runtime.reciteStopBtn.hidden = true;
-  }
-
-  function evaluateRecitation(recitedText) {
-    const text = (recitedText || "").toLowerCase();
-    const hints = ["saha", "navavatu", "bhunaktu", "karavavahai", "tejasvi", "vidvishavahai", "shantih"];
-    const matches = hints.reduce(function (acc, token) {
-      return acc + (text.indexOf(token) !== -1 ? 1 : 0);
-    }, 0);
-    state.recited = true;
-    saveState();
-    renderProgress();
-    if (matches >= 3) {
-      return "Wonderful! You remembered so much!";
-    }
-    if (text.length >= 6) {
-      return "Great effort! Let's practise that line again!";
-    }
-    return "Lovely try! Listen once more and recite with Mithu again.";
-  }
-
-  async function startRecitation() {
-    panel.classList.remove("wrong");
-    if (ui.status) ui.status.textContent = "";
-    runtime.recitationText = "";
-    if (runtime.reciteStartBtn) runtime.reciteStartBtn.disabled = true;
-    if (runtime.reciteStopBtn) runtime.reciteStopBtn.hidden = false;
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(function (track) { track.stop(); });
-    } catch (_error) {
-      if (ui.status) ui.status.textContent = "Microphone permission is needed for recitation practice.";
-      stopRecitation();
-      return;
-    }
-
-    if (!SpeechRecognition) {
-      if (ui.status) {
-        ui.status.textContent = "Recitation mode is available, but automatic Sanskrit recognition is limited on this browser. Please listen and repeat with Mithu.";
-      }
-      setMascotSpeech("I heard your effort! Let's keep practising together.");
-      state.recited = true;
-      saveState();
-      renderProgress();
-      stopRecitation();
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = "sa-IN";
-    recognition.interimResults = true;
-    recognition.continuous = true;
-    runtime.recognition = recognition;
-
-    recognition.onresult = function (event) {
-      let combined = "";
-      for (let i = event.resultIndex; i < event.results.length; i += 1) {
-        combined += event.results[i][0].transcript + " ";
-      }
-      runtime.recitationText = (runtime.recitationText + " " + combined).trim();
-      if (runtime.reciteStatus) runtime.reciteStatus.textContent = runtime.recitationText.slice(-160);
-    };
-
-    recognition.onerror = function () {
-      if (ui.status) ui.status.textContent = "Great effort! Let's practise that line again!";
-    };
-
-    recognition.onend = function () {
-      const feedback = evaluateRecitation(runtime.recitationText);
-      if (ui.status) ui.status.textContent = feedback + " (Practice mode only: recognition may miss Sanskrit sounds.)";
-      setMascotSpeech(feedback);
-      stopRecitation();
-    };
-
-    recognition.start();
-    if (ui.status) ui.status.textContent = "Listening... recite the full shloka, then tap Stop.";
-  }
-
-  function setVideoSource(sourcePath) {
-    if (!runtime.video) return;
-    const resolved = resolvePath(sourcePath);
-    if (runtime.video.getAttribute("src") !== resolved) {
-      runtime.video.setAttribute("src", resolved);
-      runtime.video.load();
-    }
-  }
-
-  function startGuidedJourney() {
-    setVideoSource(shloka.pronunciationVideo);
-    runtime.repeatCount = 0;
-    runtime.guidedMode = true;
-    runtime.currentCueIndex = -1;
-    state.watched = true;
-    saveState();
-    renderProgress();
-    if (ui.status) ui.status.textContent = "Watch, listen, repeat each line, then enjoy full recitation repeats.";
-    setMascotSpeech("Tap each line, listen carefully, and repeat with joy!");
-    runtime.video.currentTime = 0;
-    runtime.video.play().catch(function () {});
-  }
-
-  function playMeaningVideo() {
-    setVideoSource(shloka.meaningVideo);
-    runtime.guidedMode = false;
-    runtime.currentCueIndex = -1;
-    if (runtime.subtitleLine) runtime.subtitleLine.textContent = "Meaning video";
-    if (runtime.subtitleTranslit) runtime.subtitleTranslit.textContent = "Sahana Vavatu";
-    if (runtime.subtitleMeaning) runtime.subtitleMeaning.textContent = "Watch the meaning reference from your provided source.";
-    if (ui.status) ui.status.textContent = "Meaning reference video playing.";
-    runtime.video.currentTime = 0;
-    runtime.video.play().catch(function () {});
-  }
-
-  function bindVideo(videoEl) {
-    runtime.video = videoEl;
-    videoEl.addEventListener("timeupdate", function () {
-      if (videoEl.getAttribute("src") && videoEl.getAttribute("src").indexOf("sahana-vavatu-pronunciation") !== -1) {
-        setSubtitleFromCue(videoEl.currentTime);
-      }
-    });
-    videoEl.addEventListener("ended", function () {
-      if (!runtime.guidedMode) return;
-      runtime.repeatCount += 1;
-      if (runtime.repeatCount < runtime.repeatTarget) {
-        runtime.currentCueIndex = -1;
-        runtime.video.currentTime = 0;
-        if (ui.status) {
-          ui.status.textContent = "Beautiful! Full recitation repeat " + runtime.repeatCount + "/" + runtime.repeatTarget + ".";
-        }
-        runtime.video.play().catch(function () {});
-      } else {
-        runtime.guidedMode = false;
-        if (ui.status) ui.status.textContent = "Great practice! Now try 🎤 Recite with Mithu.";
-      }
-    });
   }
 
   function scrollIntoView() {
@@ -417,12 +268,30 @@
     panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function startVideo(chantMode) {
+    if (!runtime.video) return;
+    runtime.currentCueIndex = -1;
+    runtime.video.currentTime = 0;
+    runtime.video.play().catch(function () {});
+    state.watched = true;
+    if (chantMode) {
+      state.recited = true;
+      setMascotSpeech("Chant along with me! Keep your voice gentle and clear.");
+      ui.status.textContent = "Chant-along mode started. Follow the highlighted Sanskrit lines.";
+    } else {
+      setMascotSpeech("Listen, repeat, and enjoy each line with Mithu.");
+      ui.status.textContent = "Watch the learning video and follow the subtitles.";
+    }
+    saveState();
+    renderProgress();
+  }
+
   function renderGarden() {
     panel.classList.remove("wrong");
     ui.title.textContent = "Shloka Garden · " + shloka.title;
-    ui.text.textContent = "Watch, listen, repeat, understand meaning, and practise full recitation with Mithu.";
-    ui.meta.textContent = "Sources: pronunciation video, meaning video, and scene artwork from your /mantras folder. Voice is never uploaded or stored.";
-    if (ui.subtitle) ui.subtitle.textContent = "Learn one shloka with video, meaning, and joyful recitation practice.";
+    ui.text.textContent = "Watch the new 1-minute learning video, follow Sanskrit subtitles, and practise chant-along replays.";
+    ui.meta.textContent = "Created from your four contact-sheet illustrations with preserved original children's chanting audio.";
+    if (ui.subtitle) ui.subtitle.textContent = "Learn one shloka with video, meaning, and joyful chant-along practice.";
     if (ui.actionBtn) ui.actionBtn.style.display = "none";
 
     ui.choices.innerHTML = [
@@ -437,14 +306,11 @@
       '  </div>',
       '  <div class="shloka-scenes" id="shlokaScenes"></div>',
       '  <div class="shloka-actions">',
-      '    <button type="button" class="button primary" id="startShlokaJourneyBtn">▶ Start Learning Journey (about 2½ min)</button>',
-      '    <button type="button" class="button ghost" id="playMeaningVideoBtn">🎬 Watch Meaning Video</button>',
-      '    <button type="button" class="button challenge" id="reciteWithMithuBtn">🎤 Recite with Mithu</button>',
-      '    <button type="button" class="button ghost" id="stopReciteBtn" hidden>⏹ Stop Recitation</button>',
+      '    <button type="button" class="button primary" id="startShlokaJourneyBtn">▶ Play New Shloka Learning Video (1 min)</button>',
+      '    <button type="button" class="button challenge" id="reciteWithMithuBtn" hidden>🎤 Recite with Mithu</button>',
       '    <button type="button" class="button secondary" id="completeShlokaBtn">🌸 Mark Practice Complete</button>',
       '  </div>',
-      '  <p class="footer-note recite-privacy-note">Practice mode note: automatic Sanskrit speech recognition may be limited by browser/device. Feedback is encouraging guidance, not strict scoring.</p>',
-      '  <p id="reciteLiveText" class="footer-note" aria-live="polite"></p>',
+      '  <p class="footer-note recite-privacy-note">Chant-along mode only: no microphone, no voice recording, no automated pronunciation scoring.</p>',
       '  <div class="shloka-lines" id="shlokaLineCards"></div>',
       '</div>'
     ].join("");
@@ -452,9 +318,7 @@
     runtime.subtitleLine = document.getElementById("shlokaSubtitleLine");
     runtime.subtitleTranslit = document.getElementById("shlokaSubtitleTranslit");
     runtime.subtitleMeaning = document.getElementById("shlokaSubtitleMeaning");
-    runtime.reciteStatus = document.getElementById("reciteLiveText");
-    runtime.reciteStartBtn = document.getElementById("reciteWithMithuBtn");
-    runtime.reciteStopBtn = document.getElementById("stopReciteBtn");
+    runtime.reciteBtn = document.getElementById("reciteWithMithuBtn");
     runtime.currentCueIndex = -1;
 
     const scenesHost = document.getElementById("shlokaScenes");
@@ -469,71 +333,74 @@
     });
 
     const lineCards = document.getElementById("shlokaLineCards");
+    runtime.lineCards = [];
     shloka.lines.forEach(function (line, index) {
       const card = document.createElement("button");
       card.type = "button";
       card.className = "shloka-line-card";
-      card.innerHTML = '<span class="sa">' + line.sanskrit + '</span><span class="tr">' + line.transliteration + "</span><span class=\"en\">" + line.meaning + "</span>";
+      card.innerHTML = '<span class="sa">' + line.sanskrit + '</span><span class="tr">' + line.transliteration + '</span><span class="en">' + line.meaning + "</span>";
       card.addEventListener("click", function (event) {
         event.stopPropagation();
-        setVideoSource(shloka.pronunciationVideo);
-        runtime.guidedMode = false;
-        const cue = shloka.cues[index] || shloka.cues[0];
+        if (!runtime.video) return;
+        const cue = shloka.cues.find(function (c) { return c.lineIndex === index; });
+        if (!cue) return;
         runtime.video.currentTime = cue.start;
         runtime.video.play().catch(function () {});
-        if (runtime.subtitleLine) runtime.subtitleLine.textContent = line.sanskrit;
-        if (runtime.subtitleTranslit) runtime.subtitleTranslit.textContent = line.transliteration;
-        if (runtime.subtitleMeaning) runtime.subtitleMeaning.textContent = line.meaning;
-        if (ui.status) ui.status.textContent = "Line replay started. Repeat after the audio.";
+        runtime.subtitleLine.textContent = line.sanskrit;
+        runtime.subtitleTranslit.textContent = line.transliteration;
+        runtime.subtitleMeaning.textContent = line.meaning;
+        ui.status.textContent = "Line replay started. Repeat with Mithu.";
         setMascotSpeech("Lovely! Repeat this line with me.");
         markLinePracticed(index);
+        highlightLine(index);
         highlightScene(index);
       });
       lineCards.appendChild(card);
+      runtime.lineCards.push(card);
     });
 
     const video = document.getElementById("shlokaVideo");
-    bindVideo(video);
-    setVideoSource(shloka.pronunciationVideo);
-    if (runtime.subtitleLine) runtime.subtitleLine.textContent = shloka.lines[0].sanskrit;
-    if (runtime.subtitleTranslit) runtime.subtitleTranslit.textContent = shloka.lines[0].transliteration;
-    if (runtime.subtitleMeaning) runtime.subtitleMeaning.textContent = shloka.lines[0].meaning;
+    runtime.video = video;
+    video.src = resolvePath(shloka.learningVideo);
+    runtime.subtitleLine.textContent = shloka.lines[0].sanskrit;
+    runtime.subtitleTranslit.textContent = shloka.lines[0].transliteration;
+    runtime.subtitleMeaning.textContent = shloka.lines[0].meaning;
 
-    const startBtn = document.getElementById("startShlokaJourneyBtn");
-    startBtn.addEventListener("click", function (event) {
+    video.addEventListener("timeupdate", function () {
+      setSubtitle(video.currentTime);
+    });
+
+    video.addEventListener("ended", function () {
+      runtime.reciteBtn.hidden = false;
+      runtime.reciteBtn.textContent = "🎤 Recite with Mithu";
+      ui.status.textContent = "Great listening! Tap 🎤 Recite with Mithu to chant along from the beginning.";
+      setMascotSpeech("Beautiful! Now chant with me from the start.");
+    });
+
+    document.getElementById("startShlokaJourneyBtn").addEventListener("click", function (event) {
       event.stopPropagation();
-      startGuidedJourney();
+      startVideo(false);
     }, true);
 
-    const meaningBtn = document.getElementById("playMeaningVideoBtn");
-    meaningBtn.addEventListener("click", function (event) {
+    runtime.reciteBtn.addEventListener("click", function (event) {
       event.stopPropagation();
-      playMeaningVideo();
+      startVideo(true);
+      runtime.reciteBtn.textContent = "🔁 Recite with Mithu Again";
     }, true);
 
-    runtime.reciteStartBtn.addEventListener("click", function (event) {
-      event.stopPropagation();
-      startRecitation();
-    }, true);
-
-    runtime.reciteStopBtn.addEventListener("click", function (event) {
-      event.stopPropagation();
-      stopRecitation();
-      if (ui.status) ui.status.textContent = evaluateRecitation(runtime.recitationText) + " (Practice mode only.)";
-    }, true);
-
-    const completeBtn = document.getElementById("completeShlokaBtn");
-    completeBtn.addEventListener("click", function (event) {
+    document.getElementById("completeShlokaBtn").addEventListener("click", function (event) {
       event.stopPropagation();
       completePractice();
     }, true);
 
     if (isCompleted()) {
-      if (ui.status) ui.status.textContent = "🌸 Completed earlier! You can replay and practise again anytime.";
-      setMascotSpeech("Welcome back! Let's enjoy Sahana Vavatu once more.");
+      ui.status.textContent = "🌸 Completed earlier! You can replay and practise again anytime.";
+      setMascotSpeech("Welcome back! Let's chant Sahana Vavatu again.");
+      runtime.reciteBtn.hidden = false;
+      runtime.reciteBtn.textContent = "🔁 Recite with Mithu Again";
     } else {
-      if (ui.status) ui.status.textContent = "Tap Start Learning Journey to begin line-by-line practice.";
-      setMascotSpeech("Let's begin Shloka Garden with Sahana Vavatu!");
+      ui.status.textContent = "Tap Play New Shloka Learning Video to begin.";
+      setMascotSpeech("Let's begin Shloka Garden with Sahana Vavatu.");
     }
 
     renderProgress();
