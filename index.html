@@ -198,6 +198,66 @@
       filter: grayscale(0.15);
     }
 
+    .shloka-quick-zone {
+      margin-top: 14px;
+      border-radius: 18px;
+      border: 2px solid #ffd3e8;
+      background: linear-gradient(180deg, #fff5fb, #fff);
+      padding: 12px;
+    }
+
+    .shloka-quick-zone h2 {
+      margin: 0;
+      font-size: clamp(1.04rem, 3.2vw, 1.24rem);
+      color: #7d2f68;
+    }
+
+    .shloka-quick-zone p {
+      margin: 6px 0 10px;
+      color: #6a4f73;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .shloka-quick-links {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .shloka-link-card {
+      display: block;
+      text-decoration: none;
+      border-radius: 14px;
+      border: 2px solid #f3c6e0;
+      background: #fff;
+      padding: 10px;
+      color: #3a2d47;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .shloka-link-card:hover,
+    .shloka-link-card:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(118, 52, 104, 0.18);
+      border-color: #dd97c5;
+      outline: none;
+    }
+
+    .shloka-link-title {
+      display: block;
+      font-weight: 900;
+      color: #6c2c62;
+      margin-bottom: 4px;
+    }
+
+    .shloka-link-sub {
+      display: block;
+      color: #5f4d73;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
     .star.orb-star { color: #ffd33d; }
     .star.orb-moon { color: #dbf1ff; }
     .star.orb-gem { color: #93ffe1; }
@@ -330,6 +390,7 @@
     @media (max-width: 760px) {
       .hero { grid-template-columns: 1fr; text-align: center; }
       .star-field { height: 190px; }
+      .shloka-quick-links { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -412,6 +473,21 @@
           <div class="play-message" id="gameMessage">Tap Start, then pop the glowing stars!</div>
         </div>
         <div class="star-field" id="starField" aria-live="polite"></div>
+      </section>
+
+      <section class="shloka-quick-zone" aria-label="Quick shloka learning videos">
+        <h2>🎵 Quick Shloka Learning Videos</h2>
+        <p>Pick a playful chant and sing along with kids around the world!</p>
+        <div class="shloka-quick-links">
+          <a class="shloka-link-card" href="https://www.youtube.com/watch?v=Mw3zl4I3Vdg" target="_blank" rel="noopener noreferrer">
+            <span class="shloka-link-title">🕊️ Sah Nāvavatu</span>
+            <span class="shloka-link-sub">Calm study prayer • 10 repetitions</span>
+          </a>
+          <a class="shloka-link-card" href="https://youtu.be/xL6ymoW_tCA" target="_blank" rel="noopener noreferrer">
+            <span class="shloka-link-title">🌸 Namo Devyai</span>
+            <span class="shloka-link-sub">Devi prayer chant • 10 repetitions</span>
+          </a>
+        </div>
       </section>
     </main>
 
