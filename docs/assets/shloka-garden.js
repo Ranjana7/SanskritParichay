@@ -57,8 +57,9 @@
       id: "sahana-vavatu",
       title: "Sah Nāvavatu",
       description: "A calm study prayer to chant together.",
-      learningVideo: "../assets/media/shlokas/sah_navavatu_web.mp4?v=20261114u12",
+      learningVideo: "../assets/media/shlokas/sah_navavatu_web.mp4?v=20261114u13",
       thumbnail: "../assets/illustrations/shloka/sahana-scene-1.png",
+      thumbLabel: "🕊️ Peace Study Shloka",
       sceneImages: [
         "../assets/illustrations/shloka/sahana-scene-1.png",
         "../assets/illustrations/shloka/sahana-scene-2.png",
@@ -85,8 +86,9 @@
       id: "namo-devyai-mahadevyai",
       title: "Namo Devyai Mahādevyai",
       description: "A gentle Devi chant with devotion.",
-      learningVideo: "../assets/media/shlokas/namo_devyai_web.mp4?v=20261114u12",
+      learningVideo: "../assets/media/shlokas/namo_devyai_web.mp4?v=20261114u13",
       thumbnail: "../assets/illustrations/shloka/namo-scene-1.png",
+      thumbLabel: "🌸 Devi Prayer Shloka",
       sceneImages: [
         "../assets/illustrations/shloka/namo-scene-1.png",
         "../assets/illustrations/shloka/namo-scene-2.png",
@@ -516,7 +518,10 @@
       card.className = "shloka-card";
       card.setAttribute("data-shloka-card", entry.id);
       card.innerHTML = [
-        '<img class="shloka-card-thumb" src="' + resolvePath(entry.thumbnail) + '" alt="' + entry.title + ' thumbnail">',
+        '<div class="shloka-thumb-wrap">',
+        '  <img class="shloka-card-thumb" src="' + resolvePath(entry.thumbnail) + '" alt="' + entry.title + ' thumbnail">',
+        (entry.thumbLabel ? '  <span class="shloka-thumb-label">' + entry.thumbLabel + '</span>' : ''),
+        '</div>',
         '<div class="shloka-card-content">',
         '  <div class="shloka-card-head">',
         "    <h3>" + entry.title + "</h3>",

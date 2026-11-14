@@ -2995,6 +2995,25 @@ body.page-sanskrit-world .mithu-crest {
   border: 1px solid #d2e0ff;
 }
 
+.shloka-thumb-wrap {
+  position: relative;
+}
+
+.shloka-thumb-label {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: #173766;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(174, 200, 240, 0.95);
+  box-shadow: 0 4px 10px rgba(23, 55, 102, 0.16);
+}
+
 .shloka-card-content {
   display: grid;
   gap: 6px;
