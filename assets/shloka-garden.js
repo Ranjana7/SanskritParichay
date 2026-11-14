@@ -25,29 +25,39 @@
   };
   const WELCOME_MESSAGE = "Namaste, little explorer! 🌟\n\nI'm Mithu! Let's discover Sanskrit together through magical worlds, fun games, beautiful shlokas and exciting adventures!\n\nReady to explore?";
 
-  function buildSahanaCues(offset) {
-    return [
-      { start: offset + 0.0, end: offset + 6.2, lineIndex: 0 },
-      { start: offset + 6.2, end: offset + 12.2, lineIndex: 1 },
-      { start: offset + 12.2, end: offset + 18.2, lineIndex: 2 },
-      { start: offset + 18.2, end: offset + 25.2, lineIndex: 3 },
-      { start: offset + 25.2, end: offset + 28.2, lineIndex: 4 }
-    ];
+  function buildLoopCues(lineWindows, loopCount, recitationDuration) {
+    const cues = [];
+    for (let loop = 0; loop < loopCount; loop += 1) {
+      const base = loop * recitationDuration;
+      lineWindows.forEach(function (windowRef, index) {
+        cues.push({
+          start: base + (windowRef.start * recitationDuration),
+          end: base + (windowRef.end * recitationDuration),
+          lineIndex: index
+        });
+      });
+    }
+    return cues;
   }
 
-  function buildNamoCues(offset) {
-    return [
-      { start: offset + 0.0, end: offset + 14.1, lineIndex: 0 },
-      { start: offset + 14.1, end: offset + 28.2, lineIndex: 1 }
-    ];
+  function buildSceneWindows(loopCount, recitationDuration) {
+    const windows = [];
+    for (let loop = 0; loop < loopCount; loop += 1) {
+      const base = loop * recitationDuration;
+      windows.push({ start: base + 0.00 * recitationDuration, end: base + 0.25 * recitationDuration, sceneIndex: 0 });
+      windows.push({ start: base + 0.25 * recitationDuration, end: base + 0.50 * recitationDuration, sceneIndex: 1 });
+      windows.push({ start: base + 0.50 * recitationDuration, end: base + 0.75 * recitationDuration, sceneIndex: 2 });
+      windows.push({ start: base + 0.75 * recitationDuration, end: base + 1.00 * recitationDuration, sceneIndex: 3 });
+    }
+    return windows;
   }
 
   const SHLOKA_LIBRARY = [
     {
       id: "sahana-vavatu",
       title: "Sah Nāvavatu",
-      description: "Learn a peaceful prayer for studying together with kindness and joy.",
-      learningVideo: "../assets/media/shlokas/sahana-vavatu-learning-v2.mp4",
+      description: "A calm study prayer to chant together.",
+      learningVideo: "../assets/media/shlokas/sah_navavatu_web.mp4?v=20261114u10",
       thumbnail: "../assets/illustrations/shloka/sahana-scene-1.png",
       sceneImages: [
         "../assets/illustrations/shloka/sahana-scene-1.png",
@@ -62,19 +72,20 @@
         { sanskrit: "तेजस्वि नावधीतमस्तु मा विद्विषावहै ।", transliteration: "Tejasvi navadhitamastu ma vidvishavahai", meaning: "May our learning shine, and may we stay kind to each other." },
         { sanskrit: "ॐ शान्तिः शान्तिः शान्तिः ॥", transliteration: "Om shantih shantih shantih", meaning: "Om, peace, peace, peace." }
       ],
-      cues: buildSahanaCues(0).concat(buildSahanaCues(29.0)),
-      sceneWindows: [
-        { start: 0, end: 14.05, sceneIndex: 0 },
-        { start: 14.05, end: 28.1, sceneIndex: 1 },
-        { start: 28.1, end: 42.15, sceneIndex: 2 },
-        { start: 42.15, end: 57.2, sceneIndex: 3 }
+      recitationDuration: 28.65,
+      lineWindows: [
+        { start: 0.00, end: 0.2164 },
+        { start: 0.2164, end: 0.4258 },
+        { start: 0.4258, end: 0.6352 },
+        { start: 0.6352, end: 0.8803 },
+        { start: 0.8803, end: 1.0 }
       ]
     },
     {
       id: "namo-devyai-mahadevyai",
       title: "Namo Devyai Mahādevyai",
-      description: "Chant a beautiful Devi shloka with devotion, calm focus, and gratitude.",
-      learningVideo: "../assets/media/shlokas/namo-devyai-mahadevyai-learning-v1.mp4",
+      description: "A gentle Devi chant with devotion.",
+      learningVideo: "../assets/media/shlokas/namo_devyai_web.mp4?v=20261114u10",
       thumbnail: "../assets/illustrations/shloka/namo-scene-1.png",
       sceneImages: [
         "../assets/illustrations/shloka/namo-scene-1.png",
@@ -86,13 +97,18 @@
         { sanskrit: "नमो देव्यै महादेव्यै शिवायै सततं नमः ।", transliteration: "Namo devyai mahadevyai shivayai satatam namah", meaning: "Salutations always to the Divine Great Goddess, the auspicious one." },
         { sanskrit: "नमः प्रकृत्यै भद्रायै नियताः प्रणताः स्म ताम् ॥", transliteration: "Namah prakrityai bhadrayai niyatah pranatah sma tam", meaning: "Salutations to holy Prakriti; we bow to Her with steady devotion." }
       ],
-      cues: buildNamoCues(0).concat(buildNamoCues(29.0)),
-      sceneWindows: [
-        { start: 0, end: 14.05, sceneIndex: 0 },
-        { start: 14.05, end: 28.1, sceneIndex: 1 },
-        { start: 28.1, end: 42.15, sceneIndex: 2 },
-        { start: 42.15, end: 57.2, sceneIndex: 3 }
+      recitationDuration: 19.24,
+      lineWindows: [
+        { start: 0.00, end: 0.5457 },
+        { start: 0.5457, end: 1.00 }
       ]
+    },
+    {
+      id: "coming-soon",
+      title: "More Shlokas Coming Soon!",
+      description: "More beautiful mantras are blooming soon.",
+      thumbnail: "../assets/illustrations/shloka/sahana-scene-2.png",
+      comingSoon: true
     }
   ];
 
@@ -106,7 +122,11 @@
     sceneNodes: [],
     currentCueIndex: -1,
     lineCards: [],
-    reciteBtn: null
+    replayBtn: null,
+    closeBtn: null,
+    currentCues: [],
+    currentSceneWindows: [],
+    loopCount: 3
   };
 
   function resolvePath(path) {
@@ -119,6 +139,7 @@
   }
 
   function ensureShlokaState(id) {
+    if (id === "coming-soon") return { watched: false, recited: false, practicedLines: {}, completed: false };
     if (!state.shlokas[id]) {
       state.shlokas[id] = { watched: false, recited: false, practicedLines: {}, completed: false };
     }
@@ -216,6 +237,7 @@
   }
 
   function getShlokaProgressPercent(shloka) {
+    if (shloka.comingSoon) return 0;
     const progress = ensureShlokaState(shloka.id);
     let score = 0;
     if (progress.watched) score += 1;
@@ -230,10 +252,11 @@
   }
 
   function getOverallProgressPercent() {
-    const total = SHLOKA_LIBRARY.reduce(function (sum, shloka) {
+    const playable = SHLOKA_LIBRARY.filter(function (entry) { return !entry.comingSoon; });
+    const total = playable.reduce(function (sum, shloka) {
       return sum + getShlokaProgressPercent(shloka);
     }, 0);
-    return Math.round(total / SHLOKA_LIBRARY.length);
+    return Math.round(total / Math.max(1, playable.length));
   }
 
   function renderProgress() {
@@ -255,7 +278,8 @@
   }
 
   function highlightScene(timeSec, shloka) {
-    const match = shloka.sceneWindows.find(function (windowRef) {
+    const windows = runtime.currentSceneWindows.length ? runtime.currentSceneWindows : buildSceneWindows(runtime.loopCount, shloka.recitationDuration);
+    const match = windows.find(function (windowRef) {
       return timeSec >= windowRef.start && timeSec < windowRef.end;
     });
     const sceneIndex = match ? match.sceneIndex : 0;
@@ -273,12 +297,13 @@
   }
 
   function setSubtitle(timeSec, shloka) {
-    const cueIndex = shloka.cues.findIndex(function (cue) {
+    const cues = runtime.currentCues.length ? runtime.currentCues : buildLoopCues(shloka.lineWindows, runtime.loopCount, shloka.recitationDuration);
+    const cueIndex = cues.findIndex(function (cue) {
       return timeSec >= cue.start && timeSec < cue.end;
     });
     if (cueIndex === -1 || cueIndex === runtime.currentCueIndex) return;
     runtime.currentCueIndex = cueIndex;
-    const cue = shloka.cues[cueIndex];
+    const cue = cues[cueIndex];
     const line = shloka.lines[cue.lineIndex];
     runtime.subtitleLine.textContent = line.sanskrit;
     runtime.subtitleTranslit.textContent = line.transliteration;
@@ -289,7 +314,8 @@
   }
 
   function getFirstCueTime(shloka, lineIndex) {
-    const cue = shloka.cues.find(function (entry) { return entry.lineIndex === lineIndex; });
+    const cues = runtime.currentCues.length ? runtime.currentCues : buildLoopCues(shloka.lineWindows, runtime.loopCount, shloka.recitationDuration);
+    const cue = cues.find(function (entry) { return entry.lineIndex === lineIndex; });
     return cue ? cue.start : 0;
   }
 
@@ -309,7 +335,7 @@
     launchCelebration();
   }
 
-  function startVideo(shloka, chantMode) {
+  function startVideo(shloka) {
     if (!runtime.video) return;
     runtime.currentCueIndex = -1;
     runtime.video.currentTime = 0;
@@ -317,14 +343,9 @@
 
     const progress = ensureShlokaState(shloka.id);
     progress.watched = true;
-    if (chantMode) {
-      progress.recited = true;
-      ui.status.textContent = "Chant-along mode started. Follow highlighted lines and recite with Mithu.";
-      setMascotSpeech("Beautiful! Chant with me line by line.");
-    } else {
-      ui.status.textContent = "Watch and learn " + shloka.title + " with subtitles and meaning.";
-      setMascotSpeech("Let's watch " + shloka.title + " together.");
-    }
+    progress.recited = true;
+    ui.status.textContent = "Chant-along started. Follow the highlighted lines with Mithu.";
+    setMascotSpeech("Beautiful! Chant with me line by line.");
     saveState();
     renderProgress();
     updateShlokaCardBadges();
@@ -375,17 +396,24 @@
     SHLOKA_LIBRARY.forEach(function (shloka) {
       const badge = document.querySelector('[data-shloka-badge="' + shloka.id + '"]');
       if (!badge) return;
+      if (shloka.comingSoon) {
+        badge.textContent = "Soon";
+        return;
+      }
       const progress = getShlokaProgressPercent(shloka);
-      badge.textContent = progress === 100 ? "Complete 🌸" : progress + "%";
+      badge.textContent = progress === 100 ? "Complete 🌸" : "Ready";
     });
   }
 
   function renderPlayer(shloka) {
+    if (shloka.comingSoon) return;
     const holder = document.getElementById("shlokaPlayer");
+    holder.classList.remove("is-hidden");
     holder.innerHTML = [
       '<div class="shloka-player-head">',
       '  <h3>' + shloka.title + "</h3>",
       '  <p>' + shloka.description + "</p>",
+      '  <p id="shlokaMithuNote" class="footer-note">Mithu says: Chant with joy and confidence! 🦜</p>',
       "</div>",
       '<div class="shloka-video-wrap">',
       '  <video id="shlokaVideo" class="shloka-video" playsinline controls preload="metadata"></video>',
@@ -395,24 +423,19 @@
       '    <p id="shlokaSubtitleMeaning" class="meaning"></p>',
       "  </div>",
       "</div>",
-      '<div class="shloka-scenes" id="shlokaScenes"></div>',
       '<div class="shloka-actions">',
-      '  <button type="button" class="button primary" id="startShlokaJourneyBtn">▶ Watch and Learn</button>',
-      '  <button type="button" class="button challenge" id="reciteWithMithuBtn">🎤 Recite with Mithu</button>',
-      '  <button type="button" class="button secondary" id="completeShlokaBtn">🌸 Mark Practice Complete</button>',
+      '  <button type="button" class="button challenge" id="chantAgainBtn">🔄 Chant Again</button>',
+      '  <button type="button" class="button ghost" id="closeShlokaPlayerBtn">✖ Close</button>',
       "</div>",
-      '<p class="footer-note recite-privacy-note">Chant-along mode only: no microphone, no voice recording, no automatic scoring.</p>',
-      '<div class="shloka-lines" id="shlokaLineCards"></div>'
+      '<p class="footer-note recite-privacy-note">Chant-along mode only: no microphone, no voice recording.</p>'
     ].join("");
 
     runtime.subtitleLine = document.getElementById("shlokaSubtitleLine");
     runtime.subtitleTranslit = document.getElementById("shlokaSubtitleTranslit");
     runtime.subtitleMeaning = document.getElementById("shlokaSubtitleMeaning");
-    runtime.reciteBtn = document.getElementById("reciteWithMithuBtn");
+    runtime.replayBtn = document.getElementById("chantAgainBtn");
+    runtime.closeBtn = document.getElementById("closeShlokaPlayerBtn");
     runtime.currentCueIndex = -1;
-
-    renderSceneStrip(shloka);
-    renderLineCards(shloka);
 
     const video = document.getElementById("shlokaVideo");
     runtime.video = video;
@@ -420,6 +443,17 @@
     runtime.subtitleLine.textContent = shloka.lines[0].sanskrit;
     runtime.subtitleTranslit.textContent = shloka.lines[0].transliteration;
     runtime.subtitleMeaning.textContent = shloka.lines[0].meaning;
+    runtime.currentCues = [];
+    runtime.currentSceneWindows = [];
+
+    video.addEventListener("loadedmetadata", function () {
+      const duration = Number(video.duration) || (shloka.recitationDuration * runtime.loopCount);
+      const loopCount = Math.max(1, Math.round(duration / shloka.recitationDuration));
+      const recitationDuration = duration / loopCount;
+      runtime.loopCount = loopCount;
+      runtime.currentCues = buildLoopCues(shloka.lineWindows, loopCount, recitationDuration);
+      runtime.currentSceneWindows = buildSceneWindows(loopCount, recitationDuration);
+    });
 
     video.addEventListener("timeupdate", function () {
       setSubtitle(video.currentTime, shloka);
@@ -427,36 +461,50 @@
     });
 
     video.addEventListener("ended", function () {
-      ui.status.textContent = "Lovely chanting! Tap 🎤 Recite with Mithu to replay and chant together again.";
-      setMascotSpeech("Amazing! Replay and chant with me anytime.");
+      const progress = ensureShlokaState(shloka.id);
+      progress.completed = true;
+      saveState();
+      renderProgress();
+      updateShlokaCardBadges();
+      ui.status.textContent = "🎉 Wonderful chanting! Tap 🔄 Chant Again for another joyful round.";
+      setMascotSpeech("Amazing! Your voice is glowing brighter every time.");
+      const mithuNote = document.getElementById("shlokaMithuNote");
+      if (mithuNote) mithuNote.textContent = "Mithu says: Superb chanting! 🌸 Try one more joyful round.";
+      launchCelebration();
     });
 
-    document.getElementById("startShlokaJourneyBtn").addEventListener("click", function (event) {
+    runtime.replayBtn.addEventListener("click", function (event) {
       event.stopPropagation();
-      startVideo(shloka, false);
+      startVideo(shloka);
     }, true);
 
-    runtime.reciteBtn.addEventListener("click", function (event) {
+    runtime.closeBtn.addEventListener("click", function (event) {
       event.stopPropagation();
-      startVideo(shloka, true);
-      runtime.reciteBtn.textContent = "🔁 Recite with Mithu Again";
-    }, true);
-
-    document.getElementById("completeShlokaBtn").addEventListener("click", function (event) {
-      event.stopPropagation();
-      completePractice(shloka);
+      if (runtime.video) runtime.video.pause();
+      holder.classList.add("is-hidden");
+      ui.status.textContent = "Choose a shloka card to begin the next chant.";
+      setMascotSpeech(WELCOME_MESSAGE);
     }, true);
   }
 
-  function selectShloka(id, autostartRecite) {
+  function selectShloka(id) {
     runtime.activeShlokaId = id;
     document.querySelectorAll("[data-shloka-card]").forEach(function (node) {
       node.classList.toggle("is-active", node.getAttribute("data-shloka-card") === id);
     });
     const shloka = getShlokaById(id);
+    if (shloka.comingSoon) {
+      const player = document.getElementById("shlokaPlayer");
+      if (player) player.classList.add("is-hidden");
+      ui.status.textContent = "✨ More beautiful shlokas are coming soon!";
+      setMascotSpeech(WELCOME_MESSAGE);
+      return;
+    }
     renderPlayer(shloka);
     renderProgress();
-    if (autostartRecite) startVideo(shloka, true);
+    startVideo(shloka);
+    const player = document.getElementById("shlokaPlayer");
+    if (player) player.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   function renderCards() {
@@ -472,29 +520,28 @@
         '<div class="shloka-card-content">',
         '  <div class="shloka-card-head">',
         "    <h3>" + entry.title + "</h3>",
-        '    <span class="shloka-card-progress" data-shloka-badge="' + entry.id + '">' + (progress === 100 ? "Complete 🌸" : progress + "%") + "</span>",
+        '    <span class="shloka-card-progress" data-shloka-badge="' + entry.id + '">' + (entry.comingSoon ? "Soon" : (progress === 100 ? "Complete 🌸" : "Ready")) + "</span>",
         "  </div>",
         "  <p>" + entry.description + "</p>",
         '  <div class="shloka-card-actions">',
-        '    <button class="button secondary" type="button" data-watch="' + entry.id + '">▶ Watch and Learn</button>',
-        '    <button class="button challenge" type="button" data-recite="' + entry.id + '">🎤 Recite with Mithu</button>',
+        (entry.comingSoon
+          ? ""
+          : '    <button class="button challenge" type="button" data-chant="' + entry.id + '">🎵 Let\'s Chant with Mithu!</button>'),
         "  </div>",
         "</div>"
       ].join("");
       cardsHost.appendChild(card);
     });
 
-    cardsHost.querySelectorAll("[data-watch]").forEach(function (btnRef) {
+    cardsHost.querySelectorAll("[data-chant]").forEach(function (btnRef) {
       btnRef.addEventListener("click", function (event) {
         event.stopPropagation();
-        selectShloka(btnRef.getAttribute("data-watch"), false);
-        startVideo(getShlokaById(btnRef.getAttribute("data-watch")), false);
+        selectShloka(btnRef.getAttribute("data-chant"));
       });
     });
-    cardsHost.querySelectorAll("[data-recite]").forEach(function (btnRef) {
-      btnRef.addEventListener("click", function (event) {
-        event.stopPropagation();
-        selectShloka(btnRef.getAttribute("data-recite"), true);
+    cardsHost.querySelectorAll("[data-shloka-card]").forEach(function (cardRef) {
+      cardRef.addEventListener("click", function () {
+        selectShloka(cardRef.getAttribute("data-shloka-card"));
       });
     });
   }
@@ -509,21 +556,24 @@
   function renderGarden() {
     panel.classList.remove("wrong");
     ui.title.textContent = "Shloka Garden";
-    ui.text.textContent = "A growing collection of Sanskrit shlokas and mantras for children.";
-    ui.meta.textContent = "Watch, chant, replay, and track progress for each shloka.";
-    if (ui.subtitle) ui.subtitle.textContent = "Watch and Learn or Recite with Mithu. Unlimited replay for every shloka.";
+    ui.text.textContent = "A magical mini-library of Sanskrit shlokas and mantras.";
+    ui.meta.textContent = "Choose one shloka, chant with Mithu, celebrate, and chant again.";
+    if (ui.subtitle) ui.subtitle.textContent = "Compact cards, one shared player, and joyful unlimited replay.";
+    const progressBar = ui.progressFill ? ui.progressFill.parentElement : null;
+    if (progressBar) progressBar.style.display = "none";
+    if (ui.progressText) ui.progressText.style.display = "none";
+    if (ui.meta) ui.meta.style.display = "none";
     if (ui.actionBtn) ui.actionBtn.style.display = "none";
 
     ui.choices.innerHTML = [
       '<div class="shloka-garden">',
       '  <div class="shloka-catalogue" id="shlokaCards"></div>',
-      '  <div class="shloka-player-shell" id="shlokaPlayer"></div>',
+      '  <div class="shloka-player-shell is-hidden" id="shlokaPlayer"></div>',
       "</div>"
     ].join("");
 
     renderCards();
-    selectShloka(runtime.activeShlokaId, false);
-    ui.status.textContent = "Choose a shloka card to begin. Mithu will guide each line.";
+    ui.status.textContent = "Choose a shloka, chant with Mithu, celebrate, and chant again.";
     setMascotSpeech(WELCOME_MESSAGE);
     renderProgress();
   }
